@@ -5,7 +5,7 @@ MAINTAINER zhengzhiwen 863293236@qq.com
 WORKDIR /program
 
 COPY docker/startup.sh /program/startup.sh
-COPY target/ob-api-manager.jar /program/app.jar
+COPY target/cicd-0.0.1-SNAPSHOT.jar /program/app.jar
 
 RUN chmod +x /program/startup.sh \
 	&& sed -i "3i export BUILD_WEB_VERSION=5.0-`date +%Y%m%d`" /program/startup.sh
