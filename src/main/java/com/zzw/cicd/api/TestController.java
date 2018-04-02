@@ -45,8 +45,13 @@ public class TestController {
 		
 	}
 	
-	@RequestMapping(value = "", method = RequestMethod.GET)
+	@RequestMapping(value = "cicd", method = RequestMethod.GET)
 	public ResponseEntity<Entity<String>> test() {
 		return Entity.success("ojbk");
+	}
+	
+	@RequestMapping(value = "cicd/ccc", method = RequestMethod.GET)
+	public ResponseEntity<Entity<String>> test() {
+		return Entity.success("完全ojbk");
 	}
 }
