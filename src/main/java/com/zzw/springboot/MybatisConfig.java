@@ -28,7 +28,6 @@ public class MybatisConfig implements ApplicationContextAware{
 	public DataSource dataSource(@Value("${jdbc.driver}") String jdbcDriver,
       @Value("${jdbc.url}") String jdbcUrl, @Value("${jdbc.username}") String jdbcUsername,
       @Value("${jdbc.password}") String jdbcPassword) {
-		System.out.println(jdbcUrl);
 	    BasicDataSource source = new BasicDataSource();
 	    source.setDriverClassName(jdbcDriver);
 	    source.setUrl(jdbcUrl);
