@@ -46,12 +46,12 @@ public class TestController {
 	}
 	
 	@RequestMapping(value = "cicd", method = RequestMethod.GET)
-	public ResponseEntity<Entity<String>> test() {
+	public ResponseEntity<Entity<String>> test1() {
 		return Entity.success("ojbk");
 	}
 	
 	@RequestMapping(value = "cicd/ccc", method = RequestMethod.GET)
-	public ResponseEntity<Entity<String>> test() {
+	public ResponseEntity<Entity<String>> test2() {
 		return Entity.success("完全ojbk");
 	}
 }
