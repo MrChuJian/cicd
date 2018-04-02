@@ -9,8 +9,6 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.zzw.cicd.util.PropertyUtil;
-
 @SpringBootApplication
 @ComponentScan(value = {"com.zzw"})
 public class Application implements ServletContextInitializer {
@@ -18,8 +16,8 @@ public class Application implements ServletContextInitializer {
 
 	public static void main(String[] args) {
 		applicationContext = SpringApplication.run(Application.class, args);
-		PropertyUtil proprtyuUtil = new PropertyUtil();
-		proprtyuUtil.init();
+//		PropertyUtil proprtyuUtil = new PropertyUtil();
+//		proprtyuUtil.init();
 	}
 
 	@Override

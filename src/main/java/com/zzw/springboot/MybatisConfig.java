@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
+import com.zzw.cicd.dao.BaseMapper;
+import com.zzw.cicd.model.BaseModel;
+
 @Configuration
 public class MybatisConfig implements ApplicationContextAware{
 
@@ -24,6 +28,7 @@ public class MybatisConfig implements ApplicationContextAware{
 	public DataSource dataSource(@Value("${jdbc.driver}") String jdbcDriver,
       @Value("${jdbc.url}") String jdbcUrl, @Value("${jdbc.username}") String jdbcUsername,
       @Value("${jdbc.password}") String jdbcPassword) {
+		System.out.println(jdbcUrl);
 	    BasicDataSource source = new BasicDataSource();
 	    source.setDriverClassName(jdbcDriver);
 	    source.setUrl(jdbcUrl);
@@ -48,9 +53,18 @@ public class MybatisConfig implements ApplicationContextAware{
 	sqlSessionFactory.setDataSource(source);
 	sqlSessionFactory.setTypeAliasesPackage("com.zzw");
 //	sqlSessionFactory.setConfigLocation(new ClassPathResource("config/mybatis.xml"));
-//	sqlSessionFactory.setTypeAliasesSuperType(IBaseModel.class);
+	sqlSessionFactory.setTypeAliasesSuperType(BaseModel.class);	
 	return sqlSessionFactory;
 	}
+	
+	@Bean
+	public static MapperScannerConfigurer mapperScannerConfigurer() {
+		MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+		mapperScannerConfigurer.setBasePackage("com.zzw");
+		mapperScannerConfigurer.setMarkerInterface(BaseMapper.class);
+		return mapperScannerConfigurer;
+	}
+	
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

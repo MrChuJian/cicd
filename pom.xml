@@ -11,6 +11,7 @@
    </parent>
    
    <repositories>
+   
 		<repository>
 			<id>dev-nexus</id>
 			<url>http://ob.yihecloud.com/nexus/content/groups/public/</url>
@@ -29,6 +30,8 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	
+	
 	
 	<pluginRepositories>
 		<pluginRepository>
@@ -75,12 +78,46 @@
         <dependency>
         	<groupId>org.springframework</groupId>
         	<artifactId>spring-jdbc</artifactId>
-        	<version>4.2.7.RELEASE</version>
-        </dependency>
+        	</dependency>
         <dependency>
         	<groupId>org.mybatis</groupId>
         	<artifactId>mybatis-spring</artifactId>
         	<version>1.2.3</version>
+        </dependency>
+        <dependency>
+			  <groupId>com.offbytwo.jenkins</groupId>
+			  <artifactId>jenkins-client</artifactId>
+			  <version>0.3.7</version>
+		  </dependency>
+        <dependency>
+        	<groupId>com.alibaba</groupId>
+        	<artifactId>fastjson</artifactId>
+        	<version>1.2.44</version>
+        </dependency>
+        <dependency>
+        	<groupId>io.fabric8</groupId>
+        	<artifactId>kubernetes-client</artifactId>
+        	<version>3.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>io.fabric8</groupId>
+        	<artifactId>kubernetes-api</artifactId>
+        	<version>3.0.8</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.freemarker</groupId>
+        	<artifactId>freemarker</artifactId>
+        	<version>2.3.23</version>
+        </dependency>
+        <dependency>
+        	<groupId>io.springfox</groupId>
+        	<artifactId>springfox-swagger2</artifactId>
+        	<version>2.2.2</version>
+        </dependency>
+        <dependency>
+        	<groupId>io.springfox</groupId>
+        	<artifactId>springfox-swagger-ui</artifactId>
+        	<version>2.2.2</version>
         </dependency>
    </dependencies>
 
