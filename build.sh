@@ -13,6 +13,6 @@ mvn clean package -Dmaven.test.skip=true
 
 cd ${CDIR}
 
-docker build -t 192.168.52.130:5000/cicd:${version} .
+docker build -t 120.77.34.35:5000/cicd:${version} .
 
-docker push 192.168.52.130:5000/cicd:${version}
+docker push 120.77.34.35:5000/cicd:${version}
