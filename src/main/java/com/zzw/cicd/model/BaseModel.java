@@ -4,7 +4,7 @@ import com.offbytwo.jenkins.client.JenkinsHttpClient;
 
 public class BaseModel {
 
-private String _class;
+	private String _class;
     
     public String get_class() {
         return _class;
