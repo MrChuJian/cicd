@@ -92,7 +92,4 @@ public class PplTemplate {
 		return "PplTemplate [id=" + id + ", name=" + name + ", language=" + language + ", tplStageTask=" + tplStageTask
 				+ ", defaultParams=" + defaultParams + ", stages=" + stages + "]";
 	}
-	
-	
-
 }

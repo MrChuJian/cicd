@@ -71,6 +71,8 @@ public class PipelineServiceImpl implements PipelineService {
 		script.append("node('" + node + "'){");
 		script.append("\n");
 		StringBuffer gobalVar = new StringBuffer();
+		gobalVar.append("def basePath = pwd()");
+		gobalVar.append("\n");
 		List<PplStage> stages = ppl.getStages();
 		System.out.println(stages);
 		StringBuffer windowsStageScript = new StringBuffer();
@@ -85,15 +87,16 @@ public class PipelineServiceImpl implements PipelineService {
 			for (PplTask pplTask : tasks) {
 				List<PplTaskParam> taskParams = pplTask.getTaskParams();
 				if (!"".equals(pplTask.getWorkspace()) && pplTask.getWorkspace() != null) {
-					linuxStageScript.append("dir(\"" + pplTask.getWorkspace() + "\"){");
+					linuxStageScript.append("dir(\"$basePath/" + pplTask.getWorkspace() + "\"){");
 					linuxStageScript.append("\n");
-					windowsStageScript.append("dir(\"" + pplTask.getWorkspace() + "\"){");
+					windowsStageScript.append("dir(\"$basePath/" + pplTask.getWorkspace() + "\"){");
+					windowsStageScript.append("\n");
+				} else {
+					linuxStageScript.append("dir(\"" + "$basePath/" + "\"){");
+					linuxStageScript.append("\n");
+					windowsStageScript.append("dir(\"" + "$basePath/" + "\"){");
 					windowsStageScript.append("\n");
 				}
-				linuxStageScript.append("parallel '" + pplTask.getName() + "' : {");
-				linuxStageScript.append("\n");
-				windowsStageScript.append("parallel '" + pplTask.getName() + "' : {");
-				windowsStageScript.append("\n");
 				for (PplTaskParam pplTaskParam : taskParams) {
 					// 拼凑全局变量
 					if (pplTaskParam.isGobal()) {
@@ -110,18 +113,12 @@ public class PipelineServiceImpl implements PipelineService {
 				}
 				linuxStageScript.append(pplTask.getLinuxScript());
 				linuxStageScript.append("\n");
-				linuxStageScript.append("}");
-				linuxStageScript.append("\n");
 				windowsStageScript.append(pplTask.getWindowsScript());
 				windowsStageScript.append("\n");
+				linuxStageScript.append("}");
+				linuxStageScript.append("\n");
 				windowsStageScript.append("}");
 				windowsStageScript.append("\n");
-				if (!"".equals(pplTask.getWorkspace()) && pplTask.getWorkspace() != null) {
-					linuxStageScript.append("}");
-					linuxStageScript.append("\n");
-					windowsStageScript.append("}");
-					windowsStageScript.append("\n");
-				}
 			}
 			linuxStageScript.append("}");
 			linuxStageScript.append("\n");

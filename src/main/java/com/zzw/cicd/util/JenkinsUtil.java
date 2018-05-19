@@ -67,8 +67,8 @@ public class JenkinsUtil {
 			try {
 				jenkinsInfo = new JenkinsConfig();
 				jenkinsInfo.setUsername("admin");
-				jenkinsInfo.setPassword("123456");
-				jenkinsInfo.setUrl("http://192.168.52.130:8081");
+				jenkinsInfo.setPassword("admin");
+				jenkinsInfo.setUrl("http://120.77.34.35:8001");
 
 				jenkinsServer = new JenkinsServer(new URI(jenkinsInfo.getUrl()), jenkinsInfo.getUsername(),
 						jenkinsInfo.getPassword());

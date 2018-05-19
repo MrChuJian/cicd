@@ -27,6 +27,9 @@ public interface PplTaskMapper extends BaseMapper {
 	PplTask getById(Integer id);
 
 	@Select("select * from ppl_task where id in ${ids}")
-	List<PplTask> geByIds(@Param("ids") String ids);
+	List<PplTask> getByIds(@Param("ids") String ids);
+	
+	@Select("select * from ppl_task")
+	List<PplTask> getAll();
 
 }

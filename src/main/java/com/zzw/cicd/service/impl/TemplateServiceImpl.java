@@ -41,7 +41,7 @@ public class TemplateServiceImpl implements TemplateService {
 				}
 			}
 			taskIds += ")";
-			List<PplTask> geByIds = pplTaskMapper.geByIds(taskIds);
+			List<PplTask> geByIds = pplTaskMapper.getByIds(taskIds);
 			pplStage.setTasks(geByIds);
 			stages.add(pplStage);
 		}

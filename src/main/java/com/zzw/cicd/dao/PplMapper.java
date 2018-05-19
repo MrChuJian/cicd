@@ -14,10 +14,10 @@ public interface PplMapper extends BaseMapper {
 	@Select("select * from ppl where id=#{id}")
 	PPL getById(Integer id);
 
-	@Insert("INSERT INTO ppl (name,script,metadata,node) " + "VALUES (#{name}, #{script}, #{metadata} ,#{node})")
+	@Insert("INSERT INTO ppl (name,script,metadata,node) " + "VALUES (#{name}, #{script} ,#{metadata}, #{node})")
 	int insert(PPL ppl);
 
-	@Update("update ppl set name=#{name},script=#{script},metadata=#{metadata},node=#{node}")
+	@Update("update ppl set name=#{name},script=#{script},metadata=#{metadata},node=#{node} where name=#{name}")
 	int update(PPL ppl);
 
 	@Delete("delete  from ppl WHERE id=#{id}")

@@ -28,4 +28,7 @@ public interface PplStageMapper extends BaseMapper {
 	@Select("select * from ppl_stage where id in #{ids}")
 	List<PplStage> geByIds(String ids);
 
+	@Select("select * from ppl_stage")
+	List<PplStage> get();
+
 }

@@ -5,11 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.zzw.cicd.model.Entity;
+import com.zzw.cicd.model.Test;
+import com.zzw.cicd.model.User;
 import com.zzw.cicd.model.Vo.PPL;
 import com.zzw.cicd.model.Vo.PplTemplate;
 import com.zzw.cicd.service.PipelineService;
@@ -50,8 +53,9 @@ public class TestController {
 		return Entity.success("ojbk");
 	}
 	
-	@RequestMapping(value = "wqojbk", method = RequestMethod.GET)
-	public ResponseEntity<Entity<String>> test2() {
+	@RequestMapping(value = "wqojbk", method = RequestMethod.POST)
+	public ResponseEntity<Entity<String>> test2(@RequestBody Test test) {
+		System.out.println(test);
 		return Entity.success("完全ojbk");
 	}
 }

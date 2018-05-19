@@ -1,5 +1,7 @@
 package com.zzw.cicd.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,15 @@ public class TaskServiceImpl implements TaskService {
 	private PplTaskMapper pplTaskMapper;
 
 	@Override
-	public PplTask getById(Integer id) {
+	public PplTask getTaskById(Integer id) {
 		return pplTaskMapper.getById(id);
 	}
+
+	@Override
+	public List<PplTask> getAll() {
+		return pplTaskMapper.getAll();
+	}
+	
+	
 
 }
