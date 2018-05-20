@@ -119,12 +119,12 @@ public class DeployController {
 			}
 			return Entity.failure(1, msg);
 		} else {
-			// 存到数据库中
-			// if (null == deployVo.getId() || "".equals(deployVo.getId())) {
-			// deployService.addDeploy(deployVo);
-			// } else {
-			// deployService.updateDeploy(deployVo);
-			// }
+//			 存到数据库中
+			 if (null == deployVo.getId() || "".equals(deployVo.getId())) {
+			 deployService.addDeploy(deployVo);
+			 } else {
+			 deployService.updateDeploy(deployVo);
+			 }
 		}
 		;
 		if (!ingressService.createIngress(deploy.getIngressVo())) {

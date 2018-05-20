@@ -1,5 +1,8 @@
 package com.zzw.cicd.api;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -50,7 +53,14 @@ public class TestController {
 	
 	@RequestMapping(value = "ojbk", method = RequestMethod.GET)
 	public ResponseEntity<Entity<String>> test1() {
-		return Entity.success("ojbk");
+		String hostAddress = null;
+		try {
+			InetAddress address = InetAddress.getLocalHost();
+			hostAddress = address.getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return Entity.success("本服务器ip:" + hostAddress);
 	}
 	
 	@RequestMapping(value = "wqojbk", method = RequestMethod.POST)

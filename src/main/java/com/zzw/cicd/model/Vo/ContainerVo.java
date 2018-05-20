@@ -32,4 +32,19 @@ public class ContainerVo {
 		this.volumes = volumes;
 	}
 
+	public String getContainerPort() {
+		StringBuffer containerPort = new StringBuffer();
+		for (PortVo portVo : ports) {
+			containerPort.append(portVo.getPort().toString() + "/" + portVo.getProtocol().toString() + ",");
+		}
+		return containerPort.substring(0, containerPort.length() - 1);
+	}
+	
+	public String getProtocol() {
+		StringBuffer containerPort = new StringBuffer();
+		for (PortVo portVo : ports) {
+			containerPort.append(portVo.getPort().toString() + "/" + portVo.getProtocol().toString() + ",");
+		}
+		return containerPort.substring(0, containerPort.length() - 1);
+	}
 }

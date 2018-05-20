@@ -112,7 +112,6 @@ public class DeployServiceImpl implements IDeployService {
 			logger.info(e);
 			return false;
 		}
-
 	}
 
 	@Override
