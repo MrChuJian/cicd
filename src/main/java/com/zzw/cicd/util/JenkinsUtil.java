@@ -1610,9 +1610,9 @@ public class JenkinsUtil {
 		        isBuilding = true;
 		    }
 		    if(isBuilding) {
-		    	System.out.println("building,");
+		    	System.out.println("building");
 		    } else {
-		    	System.out.println("builded,");
+		    	System.out.println("builded");
 		    }
 		} catch (IOException e) {
 			e.printStackTrace();
