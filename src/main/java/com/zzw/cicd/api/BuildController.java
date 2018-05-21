@@ -83,8 +83,9 @@ public class BuildController {
 	@ApiOperation(value = "启动构建工程", notes = "启动构建工程")
 	@RequestMapping(value = "/ppl/{id}/start", method = RequestMethod.GET)
 	public ResponseEntity<Entity<Boolean>> startPPlById(@PathVariable Integer id) {
-		boolean start = pipelineService.start(id);
-		return Entity.success(start);
+//		boolean start = pipelineService.start(id);
+		JenkinsUtil.test();
+		return Entity.success(null);
 	}
 
 	@ApiOperation(value = "停止构建工程", notes = "停止构建工程")
