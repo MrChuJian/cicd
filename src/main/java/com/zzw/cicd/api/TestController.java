@@ -32,16 +32,8 @@ public class TestController {
 
 	@GetMapping(value = "/greeting")
 	public ResponseEntity<Entity<String>> greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name) {
-		PplTemplate pplTemplate = templateService.getById(1);
 		
-		PPL ppl = new PPL();
-		ppl.setName("test");
-		ppl.setNode("master");
-		ppl.setPplTemplate(pplTemplate);
-		ppl.setMetadata("11");
-		
-		pipelineService.create(ppl);
-		return Entity.success("hellow");
+		return Entity.success("greeting");
 	}
 	
 	@RequestMapping(value = "/shabi", method = RequestMethod.GET)
