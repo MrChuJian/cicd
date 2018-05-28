@@ -11,6 +11,8 @@ public class FtlVo {
 	private boolean hasTimeTrigger;
 	private boolean hasSCMTrigger;
 	private String ignoreHook;
+	private String authToken;
+	private boolean webhook = false;
 
 	public String getDisplayName() {
 		return displayName;
@@ -91,5 +93,23 @@ public class FtlVo {
 	public void setIgnoreHook(String ignoreHook) {
 		this.ignoreHook = ignoreHook;
 	}
+
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
+	}
+
+	public boolean isWebhook() {
+		return webhook;
+	}
+
+	public void setWebhook(boolean webhook) {
+		this.webhook = webhook;
+	}
+	
+	
 
 }

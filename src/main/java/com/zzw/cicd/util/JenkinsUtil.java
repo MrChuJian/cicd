@@ -124,8 +124,30 @@ public class JenkinsUtil {
 			return false;
 		}
 	}
+	
+	public static boolean enableJob(String name) {
+		try {
+			getJenkinsServer().enableJob(name);
+			return true;
+		} catch (IOException e) {
+			logger.info("启动job失败");
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	public static boolean stopJob(String name) {
+		try {
+			getJenkinsServer().disableJob(name);
+			return true;
+		} catch (IOException e) {
+			logger.info("停止job失败");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean disableJob(String name) {
 		try {
 			getJenkinsServer().disableJob(name);
 			return true;
@@ -1618,5 +1640,75 @@ public class JenkinsUtil {
 			e.printStackTrace();
 		}
 	}
+	
+//	获取某次构建的日志信息
+	public static String getJobLog(int buildNumber, String jobName) throws IOException {
+
+	    JenkinsServer jenkins = getJenkinsServer();
+	    JobWithDetails job = jenkins.getJob(jobName);
+	    JobWithDetails details = job.details();
+	    Build buildByNumber = details.getBuildByNumber(buildNumber);
+	    BuildWithDetails details2 = buildByNumber.details();
+	    String outputText = details2.getConsoleOutputText();
+	    return outputText;
+	}
+	
+//	获取某次构建的开始时间和持续时间
+	public static Map<String, Long> getStartTImeAndEndTime(String jobName, int number) throws IOException {
+
+	    JenkinsServer jenkins = getJenkinsServer();
+	    Map<String, Job> jobs = jenkins.getJobs();
+	    JobWithDetails job = jobs.get(jobName).details();
+	    Build buildByNumber = job.getBuildByNumber(number);
+	    long startTime = buildByNumber.details().getTimestamp();
+	    long duration = buildByNumber.details().getDuration();
+
+	    Map<String, Long> data = new HashMap<>();
+	    data.put("startTime", startTime);
+	    data.put("duration", duration);
+	    return data;
+	}
+	
+	
+//	通过获取构建的最终的结果来判断最终的结果
+//	返回结果：SUCCESS， FAILURE
+	public static String isSuccess(String jobName, int number) throws IOException {
+        JenkinsServer jenkins = getJenkinsServer();
+        Map<String, Job> jobs = jenkins.getJobs();
+        JobWithDetails job = jobs.get(jobName).details();
+        Build buildByNumber = job.getBuildByNumber(number);
+        BuildWithDetails details = buildByNumber.details();
+        return details.getResult().toString();
+    }
+	
+	//判断job是否执行完
+	public static boolean isFinished(int number, String jobName) {
+        boolean isBuilding = false;
+        if (number <= 0) {
+            throw new IllegalArgumentException("jodId must greater than 0!");
+        }
+        try {
+            JenkinsServer jenkins = getJenkinsServer();
+            Map<String, Job> jobs = jenkins.getJobs();
+            JobWithDetails job = jobs.get(jobName).details();
+            Build buildByNumber = job.getBuildByNumber(number);
+            if (null != buildByNumber) {
+                BuildWithDetails details = buildByNumber.details();
+                if (null != details) {
+                    isBuilding = details.isBuilding();
+                } else {
+                    isBuilding = true;
+                }
+            } else {
+                isBuilding = true;
+            }
+
+            return !isBuilding;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        }
+        return false;
+    }
 
 }

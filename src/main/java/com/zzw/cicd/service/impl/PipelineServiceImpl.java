@@ -1,7 +1,15 @@
 package com.zzw.cicd.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +21,7 @@ import com.zzw.cicd.model.Vo.PplTask;
 import com.zzw.cicd.model.Vo.PplTaskParam;
 import com.zzw.cicd.model.Vo.PplTemplate;
 import com.zzw.cicd.service.PipelineService;
+import com.zzw.cicd.util.CacheUtil;
 import com.zzw.cicd.util.FTLUtilPPL;
 import com.zzw.cicd.util.JenkinsUtil;
 
@@ -29,13 +38,15 @@ public class PipelineServiceImpl implements PipelineService {
 		// 3,存库
 		FtlVo ftlVo = new FtlVo();
 		ftlVo.setDisplayName(ppl.getName() + System.currentTimeMillis());// 工程名需要定义：代码仓名+分支名
-		ftlVo.setHasTrigger(false);
+		ftlVo.setHasTrigger(true);
 		ftlVo.setHasSCMTrigger(false);
 		ftlVo.setDaysToKeep(2);
 		ftlVo.setNumToKeep(2);
 		ftlVo.setQuietPeriod(5);
 		ftlVo.setIgnoreHook("true");
 		ftlVo.setSpec("");
+		ftlVo.setAuthToken(ppl.getAuthToken());
+		ftlVo.setWebhook(ppl.isWebhook());
 		String pplScript = getPplScript(ppl.getPplTemplate(), ppl.getNode());
 		ppl.setScript(pplScript);
 		ftlVo.setScript(pplScript);
@@ -145,17 +156,17 @@ public class PipelineServiceImpl implements PipelineService {
 	}
 
 	@Override
-	public boolean start(Integer id) {
+	public boolean enableJob(Integer id) {
 		PPL byId = pplMapper.getById(id);
-		boolean startJob = JenkinsUtil.startJob(byId.getName());
+		boolean startJob = JenkinsUtil.enableJob(byId.getName());
 		return startJob;
 
 	}
 
 	@Override
-	public boolean stop(Integer id) {
+	public boolean disableJob(Integer id) {
 		PPL byId = pplMapper.getById(id);
-		boolean stopJob = JenkinsUtil.startJob(byId.getName());
+		boolean stopJob = JenkinsUtil.disableJob(byId.getName());
 		return stopJob;
 	}
 
@@ -178,6 +189,8 @@ public class PipelineServiceImpl implements PipelineService {
 		ftlVo.setQuietPeriod(5);
 		ftlVo.setIgnoreHook("true");
 		ftlVo.setSpec("");
+		ftlVo.setAuthToken(ppl.getAuthToken());
+		ftlVo.setWebhook(ppl.isWebhook());
 		String pplScript = getPplScript(ppl.getPplTemplate(), ppl.getNode());
 		ppl.setScript(pplScript);
 		ftlVo.setScript(pplScript);
@@ -194,5 +207,54 @@ public class PipelineServiceImpl implements PipelineService {
 		}
 		return true;
 	}
+
+	@Override
+	public boolean start(Integer id) {
+		PPL ppl = pplMapper.getById(id);
+		String name = ppl.getName();
+		String token = ppl.getAuthToken();
+		if(name != null && !name.equals("") && token != null && !token.equals("")) {
+			return start(name, token);
+		}
+		return false;
+	}
+	
+	public boolean start(String name, String token) {
+		HttpClient client = new HttpClient();  
+		
+        client.getParams().setAuthenticationPreemptive(true);  
+        Credentials defaultcreds = new UsernamePasswordCredentials("admin", "admin");  
+        client.getState().setCredentials(AuthScope.ANY, defaultcreds); 
+        
+        StringBuffer url = new StringBuffer(CacheUtil.getJenkinsUrl());
+		url.append("/job/" + name + "/build?token=" + token);
+		System.out.println(url.toString());
+		HttpMethod method = new PostMethod(url.toString());
+		
+		try {
+			int code = client.executeMethod(method);
+			if(code >= 200 && code <400) {
+				String body = method.getResponseBodyAsString();
+			} else {
+				System.out.println(code);
+				return false;
+			}
+		} catch (HttpException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+		
+	}
+
+	@Override
+	public PPL getByName(String name) {
+		PPL ppl = pplMapper.getByName(name);
+		return ppl;
+	}
+
 
 }

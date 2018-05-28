@@ -1,6 +1,8 @@
 package com.zzw.cicd.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,8 @@ import com.zzw.cicd.model.Vo.VolumeVo;
 import com.zzw.cicd.service.IDeployService;
 import com.zzw.cicd.service.IIngressService;
 import com.zzw.cicd.service.IServiceService;
+import com.zzw.cicd.util.CacheUtil;
+import com.zzw.cicd.util.DockerRegistryUtil;
 
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.HostPathVolumeSource;
@@ -180,6 +184,16 @@ public class DeployController {
 		Deployment deployment = deployService.getDeploymentByName(name, namespace);
 
 		return Entity.success(deployment);
+	}
+	
+	@RequestMapping(value = "/name/{name}/ImagesTarget", method = RequestMethod.GET)
+	public ResponseEntity<Entity<List<String>>> getImagesTarget(@PathVariable String name) {
+		List<String> list = DockerRegistryUtil.getImagesTarget(name);
+		if(list == null) {
+			Entity.failure(404, "没有该镜像");
+		}
+		Collections.sort(list);
+		return Entity.success(list);
 	}
 
 	@RequestMapping(value = "/name/{name}", method = RequestMethod.DELETE)

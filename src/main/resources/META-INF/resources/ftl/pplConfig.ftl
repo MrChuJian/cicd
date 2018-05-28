@@ -27,6 +27,11 @@
           <ignorePostCommitHooks>${ignoreHook}</ignorePostCommitHooks>
         </hudson.triggers.SCMTrigger>
         </#if>
+        <#if webhook >
+        <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.29.0">
+			<spec/>
+		</com.cloudbees.jenkins.GitHubPushTrigger>
+        </#if>
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     </#if>
@@ -37,4 +42,7 @@
   </definition>
   <triggers/>
   <quietPeriod>${quietPeriod}</quietPeriod>
+  <#if authToken?exists&&authToken != "" >
+  <authToken>${authToken}</authToken>
+  </#if>
 </flow-definition>

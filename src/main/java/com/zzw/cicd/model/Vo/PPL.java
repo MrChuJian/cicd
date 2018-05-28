@@ -12,6 +12,8 @@ public class PPL implements Serializable {
 	private String metadata;
 	private PplTemplate pplTemplate;
 	private String node;
+	private String authToken;
+	private boolean webhook = false;
 
 	public Integer getId() {
 		return id;
@@ -64,5 +66,23 @@ public class PPL implements Serializable {
 	public void setNode(String node) {
 		this.node = node;
 	}
+
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
+	}
+
+	public boolean isWebhook() {
+		return webhook;
+	}
+
+	public void setWebhook(boolean webhook) {
+		this.webhook = webhook;
+	}
+	
+	
 
 }

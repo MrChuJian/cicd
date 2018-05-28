@@ -23,13 +23,19 @@ public interface PplTaskMapper extends BaseMapper {
 	@Delete("delete  from ppl_task WHERE id=#{id}")
 	int deleteById(Integer id);
 
-	@Select("select * from ppl_task where id=#{id}")
+	@Select("select "
+			+ "id, name, input, windows_script as windowsScript, linux_script as linuxScript, description, stage_id as stageId, workspace"
+			+ " from ppl_task where id=#{id}")
 	PplTask getById(Integer id);
 
-	@Select("select * from ppl_task where id in ${ids}")
+	@Select("select "
+			+ "id, name, input, windows_script as windowsScript, linux_script as linuxScript, description, stage_id as stageId, workspace"
+			+ " from ppl_task where id in ${ids}")
 	List<PplTask> getByIds(@Param("ids") String ids);
 	
-	@Select("select * from ppl_task")
+	@Select("select "
+			+ "id, name, input, windows_script as windowsScript, linux_script as linuxScript, description, stage_id as stageId, workspace"
+			+ " from ppl_task")
 	List<PplTask> getAll();
 
 }
