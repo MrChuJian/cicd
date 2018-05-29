@@ -1,4 +1,8 @@
 package com.zzw.cicd.model.Vo;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 public class DeployVo {
 	private Integer id;//
 	private String name;// 部署名 serviceName
@@ -10,6 +14,10 @@ public class DeployVo {
 	private String ingressDomain;// 代理域名
 	private String ingressIp;// 代理主机Ip
 	private ContainerVo container;// 容器
+	private String metadata;
+
+	
+	
 
 	public String getName() {
 		return name;
@@ -84,11 +92,25 @@ public class DeployVo {
 	}
 
 	public ContainerVo getContainer() {
+		if(metadata != null) {
+			container = JSONObject.parseObject(metadata, ContainerVo.class);
+		}
 		return container;
 	}
 
 	public void setContainer(ContainerVo container) {
 		this.container = container;
+		if(container != null) {
+			this.metadata = JSONObject.toJSONString(container);
+		}
+	}
+	
+	public String getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
 	}
 
 }

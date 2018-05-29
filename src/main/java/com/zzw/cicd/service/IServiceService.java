@@ -9,5 +9,5 @@ public interface IServiceService {
     boolean createService(ServiceVo serviceVo);
     boolean updateService(ServiceVo serviceVo);
     boolean deleteServiceByNameAndNamespace(String serviceName,String namespace); 
-    Service getIngressByNameAndNamespace(String serviceName,String namespace);
+	Service getServiceByNameAndNamespace(String serviceName, String namespace);
 }

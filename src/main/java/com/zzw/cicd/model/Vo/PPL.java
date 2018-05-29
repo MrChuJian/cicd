@@ -48,6 +48,9 @@ public class PPL implements Serializable {
 	}
 
 	public PplTemplate getPplTemplate() {
+		if(metadata != null) {
+			pplTemplate = JSONObject.parseObject(metadata, PplTemplate.class);
+		}
 		return pplTemplate;
 	}
 

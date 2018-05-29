@@ -43,8 +43,18 @@ public class IngressServiceImpl implements IIngressService {
 	}
 
 	@Override
-	public Ingress getIngressByName(String IngressName) {
-		return null;
+	public Ingress getIngressByNameAndNamespace(String IngressName, String namespace) {
+		IngressVo ingressVo = new IngressVo();
+		ingressVo.setName(IngressName + "-ingress");
+		ingressVo.setNamespace(namespace);
+		Ingress ingress = transformIngressToVo(ingressVo);
+		try {
+			return KubernetesUtil.getIngress(ingress);
+		} catch (Exception e) {
+			logger.info("获取服务失败" + e.toString());
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -91,16 +101,17 @@ public class IngressServiceImpl implements IIngressService {
 		IngressSpec ingressSpec = new IngressSpec();
 		List<IngressRule> rules = new ArrayList<>();
 		HTTPIngressRuleValue ruleValue = new HTTPIngressRuleValue();
-		List<HTTPIngressPath> paths = new ArrayList<>();
 		List<PortVo> ports = ingressVo.getPorts();
-		for (PortVo portVo : ports) {
-			IntOrString port = new IntOrString(portVo.getPort());
-			IngressBackend backend = new IngressBackend(ingressVo.getProxyName(), port);
-			HTTPIngressPath httpIngressPath = new HTTPIngressPath(backend, portVo.getPath());
-			paths.add(httpIngressPath);
+		if (ports != null) {
+			List<HTTPIngressPath> paths = new ArrayList<>();
+			for (PortVo portVo : ports) {
+				IntOrString port = new IntOrString(portVo.getPort());
+				IngressBackend backend = new IngressBackend(ingressVo.getProxyName(), port);
+				HTTPIngressPath httpIngressPath = new HTTPIngressPath(backend, portVo.getPath());
+				paths.add(httpIngressPath);
+			}
+			ruleValue.setPaths(paths);
 		}
-
-		ruleValue.setPaths(paths);
 		IngressRule rule = new IngressRule(ingressVo.getDomain(), ruleValue);
 		rules.add(rule);
 		ingressSpec.setRules(rules);

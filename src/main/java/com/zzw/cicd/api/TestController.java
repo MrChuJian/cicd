@@ -40,7 +40,6 @@ public class TestController {
 	public String hello(Model model) {
 		io.fabric8.kubernetes.api.Controller controller =  KubernetesUtil.getController("kube-system");
 		return "greeting";
-		
 	}
 	
 	@RequestMapping(value = "ojbk", method = RequestMethod.GET)

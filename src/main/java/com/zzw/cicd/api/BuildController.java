@@ -47,22 +47,23 @@ public class BuildController {
 	@Autowired
 	private TaskService taskService;
 
-	@RequestMapping(value = "/name/{name}/job", method = RequestMethod.GET)
+	@RequestMapping(value = "/name/{name}/job/detail", method = RequestMethod.GET)
 	public ResponseEntity<Entity<JobWithDetailsVo>> getJobByName(@PathVariable String name) {
 		JobWithDetails jobByName = JenkinsUtil.getJobByName(name);
 		JobWithDetailsVo details = new JobWithDetailsVo();
-		if(jobByName != null) {
+		if (jobByName != null) {
 			BeanUtils.copyProperties(jobByName, details);
 			List<Build> jlist = jobByName.getBuilds();
 			List<BuildVo> vlist = new LinkedList<>();
-			BuildVo vBuild = new BuildVo();
-			
+			BuildVo vBuild = null;
+
 			for (Build build : jlist) {
+				vBuild = new BuildVo();
 				BeanUtils.copyProperties(build, vBuild);
 				vlist.add(vBuild);
 			}
 			details.setBuilds(vlist);
-			
+
 			List<Job> jjlist = jobByName.getUpstreamProjects();
 			List<JobVo> vjlist = new LinkedList<>();
 			JobVo vjJob = null;
@@ -72,32 +73,33 @@ public class BuildController {
 				vjlist.add(vjJob);
 			}
 			details.setUpstreamProjects(vjlist);
-			
+
 			jjlist = jobByName.getDownstreamProjects();
 			vjlist = new LinkedList<>();
-			vjJob = new JobVo();
 			for (Job job : jjlist) {
+				vjJob = new JobVo();
 				BeanUtils.copyProperties(job, vjJob);
 				vjlist.add(vjJob);
 			}
 			details.setDownstreamProjects(vjlist);
-			
+
+			vBuild = new BuildVo();
 			BeanUtils.copyProperties(jobByName.getLastBuild(), vBuild);
 			details.setLastBuild(vBuild);
-			
+
+			vBuild = new BuildVo();
 			BeanUtils.copyProperties(jobByName.getFirstBuild(), vBuild);
 			details.setFirstBuild(vBuild);
-			
+
+			vBuild = new BuildVo();
 			BeanUtils.copyProperties(jobByName.getLastSuccessfulBuild(), vBuild);
 			details.setLastSuccessfulBuild(vBuild);
-			
+
 			System.out.println(details);
 			return Entity.success(details);
 		} else {
 			return Entity.failure(1, "获得Jobdetail失败,请确保CI Server已启动");
 		}
-		
-		
 	}
 
 	@RequestMapping(value = "/jobs", method = RequestMethod.GET)
@@ -126,14 +128,13 @@ public class BuildController {
 		PPL byId = pipelineService.getById(id);
 		return Entity.success(byId);
 	}
-	
+
 	@ApiOperation(value = "获取构建项目", notes = "获取获取构建")
 	@RequestMapping(value = "/ppl/name/{name}", method = RequestMethod.GET)
 	public ResponseEntity<Entity<PPL>> getPPlByName(@PathVariable String name) {
 		PPL byName = pipelineService.getByName(name);
 		return Entity.success(byName);
 	}
-	
 
 	@ApiOperation(value = "删除构建项目", notes = "删除构建项目")
 	@RequestMapping(value = "/ppl/{id}", method = RequestMethod.DELETE)
@@ -149,33 +150,31 @@ public class BuildController {
 		JenkinsUtil.test();
 		return Entity.success(null);
 	}
-	
+
 	@ApiOperation(value = "启动项目", notes = "启动项目")
 	@RequestMapping(value = "/ppl/{id}/start", method = RequestMethod.GET)
 	public ResponseEntity<Entity<Boolean>> startPPlById(@PathVariable Integer id) {
 		boolean start = pipelineService.start(id);
-		if(start) {
+		if (start) {
 			return Entity.success(start);
 		} else {
 			return Entity.failure(1, "报错拉");
 		}
 	}
-	
+
 	@ApiOperation(value = "判断构建是否执行完", notes = "判断构建是否执行完")
 	@RequestMapping(value = "/ppl/isFinished/name/{name}/num/{num}", method = RequestMethod.GET)
-	public ResponseEntity<Entity<String>> isFinished(@PathVariable Integer num,
-			@PathVariable String name) {
+	public ResponseEntity<Entity<String>> isFinished(@PathVariable Integer num, @PathVariable String name) {
 		boolean isFinished = JenkinsUtil.isFinished(num, name);
-		if(isFinished) {
+		if (isFinished) {
 			return Entity.success("构建完成");
 		}
 		return Entity.success("构建中");
 	}
-	
+
 	@ApiOperation(value = "获得构建日志", notes = "获得构建日志")
 	@RequestMapping(value = "/ppl/log/name/{name}/num/{num}", method = RequestMethod.GET)
-	public ResponseEntity<Entity<String>> getJobLog(@PathVariable Integer num,
-			@PathVariable String name) {
+	public ResponseEntity<Entity<String>> getJobLog(@PathVariable Integer num, @PathVariable String name) {
 		String log = null;
 		try {
 			log = JenkinsUtil.getJobLog(num, name);
@@ -183,7 +182,7 @@ public class BuildController {
 			e.printStackTrace();
 			return Entity.failure(2, "获得构建日志失败");
 		}
-		if(log != null && !log.equals("")) {
+		if (log != null && !log.equals("")) {
 			return Entity.success(log);
 		}
 		return Entity.failure(1, "无构建日志");
@@ -209,46 +208,68 @@ public class BuildController {
 		PplTemplate byId = templateService.getById(id);
 		return Entity.success(byId);
 	}
-	
+
 	@ApiOperation(value = "通过Id获取步骤Stage", notes = "通过Id获取步骤Stage")
 	@RequestMapping(value = "/ppl/stage/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Entity<PplStage>> getStageById(@PathVariable Integer id) {
 		PplStage pplStage = null;
 		pplStage = stageService.getStageById(id);
-		if(pplStage == null) {
+		if (pplStage == null) {
 			return Entity.failure(1, "不存在id为" + id + "的stage");
 		}
 		return Entity.success(pplStage);
 	}
-	
+
 	@ApiOperation(value = "获取步骤Stage", notes = "获取所有步骤Stage")
 	@RequestMapping(value = "/ppl/stage", method = RequestMethod.GET)
 	public ResponseEntity<Entity<List<PplStage>>> getStage() {
 		List<PplStage> stages = null;
 		stages = stageService.getAll();
-		if(stages == null || stages.size() < 1) {
+		if (stages == null || stages.size() < 1) {
 			return Entity.failure(2, "没有Stage");
 		}
 		return Entity.success(stages);
 	}
-	
+
 	@ApiOperation(value = "通过Id获取步骤Task", notes = "通过Id获取步骤Task")
 	@RequestMapping(value = "/ppl/task/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Entity<PplTask>> getTaskById(@PathVariable Integer id) {
 		PplTask task = null;
 		task = taskService.getTaskById(id);
-		if(task == null) {
+		if (task == null) {
 			return Entity.failure(1, "不存在id为" + id + "的task");
 		}
 		return Entity.success(task);
 	}
-	
+
+	@ApiOperation(value = "获得最后一次构建DockerImageName", notes = "通过Id获取步骤Task获得最后一次构建DockerImageName")
+	@RequestMapping(value = "/ppl/job/{jobName}/dockerImageName", method = RequestMethod.GET)
+	public ResponseEntity<Entity<String>> getDockerImageName(@PathVariable String jobName) {
+
+		JobWithDetails jobWithDetails = JenkinsUtil.getJobByName(jobName);
+		int num = jobWithDetails.getLastBuild().getNumber();
+		try {
+			String log = JenkinsUtil.getJobLog(num, jobName);
+			String s[] = log.split("\r\n");
+			String dockerIndex = "docker push ";
+			for (int i = 0; i < s.length; i++) {
+				if (s[i].contains(dockerIndex)) {
+					return Entity
+							.success(s[i].substring(s[i].indexOf(dockerIndex) + dockerIndex.length(), s[i].length()));
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Entity.success(null);
+	}
+
 	@ApiOperation(value = "获取任务Task", notes = "获取所有任务Task")
 	@RequestMapping(value = "/ppl/task", method = RequestMethod.GET)
 	public ResponseEntity<Entity<List<PplTask>>> getTask() {
 		List<PplTask> tasks = null;
 		tasks = taskService.getAll();
-		if(tasks == null || tasks.size() < 1) {
+		if (tasks == null || tasks.size() < 1) {
 			return Entity.failure(2, "没有task");
 		}
 		return Entity.success(tasks);

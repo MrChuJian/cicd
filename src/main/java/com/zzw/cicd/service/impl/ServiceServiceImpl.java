@@ -29,17 +29,20 @@ public class ServiceServiceImpl implements IServiceService {
 		service.setMetadata(serviceMeta);
 		ServiceSpec serviceSpec = new ServiceSpec();
 		serviceSpec.setSelector(serviceVo.getSelector());
-		List<ServicePort> ports = new ArrayList<>();
 		List<PortVo> portVos = serviceVo.getPorts();
-		for (PortVo portVo : portVos) {
-			ServicePort servicePort = new ServicePort();
-			servicePort.setName(portVo.getName());
-			servicePort.setProtocol(portVo.getProtocol());
-			servicePort.setPort(portVo.getPort());
-			servicePort.setTargetPort(new IntOrString(portVo.getPort()));
-			ports.add(servicePort);
+		if(portVos != null) {
+			List<ServicePort> ports = new ArrayList<>();
+			for (PortVo portVo : portVos) {
+				ServicePort servicePort = new ServicePort();
+				servicePort.setName(portVo.getName());
+				servicePort.setProtocol(portVo.getProtocol());
+				servicePort.setPort(portVo.getPort());
+				servicePort.setTargetPort(new IntOrString(portVo.getPort()));
+				ports.add(servicePort);
+			}
+			serviceSpec.setPorts(ports);
 		}
-		serviceSpec.setPorts(ports);
+		
 		service.setMetadata(serviceMeta);
 		service.setSpec(serviceSpec);
 		return service;
@@ -82,8 +85,17 @@ public class ServiceServiceImpl implements IServiceService {
 	}
 
 	@Override
-	public io.fabric8.kubernetes.api.model.Service getIngressByNameAndNamespace(String serviceName, String namespace) {
-		// TODO Auto-generated method stub
-		return null;
+	public io.fabric8.kubernetes.api.model.Service getServiceByNameAndNamespace(String serviceName, String namespace) {
+		ServiceVo serviceVo = new ServiceVo();
+		serviceVo.setName(serviceName + "-service");
+		serviceVo.setNamespace(namespace);
+		io.fabric8.kubernetes.api.model.Service service = transformVoToService(serviceVo);
+		try {
+			return KubernetesUtil.getService(service);
+		} catch (Exception e) {
+			logger.info("获取服务失败" + e.toString());
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

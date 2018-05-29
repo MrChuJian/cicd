@@ -1,0 +1,1 @@
+alter table deploy add metadata text;

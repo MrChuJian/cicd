@@ -9,6 +9,6 @@ public interface IIngressService {
     boolean createIngress(IngressVo ingressVo);
     boolean updateIngress(IngressVo ingressVo);
     boolean deleteIngressByNameAndNamespace(String  ingressName,String namespace);
-    Ingress getIngressByName(String IngressName);
+    Ingress getIngressByNameAndNamespace(String IngressName, String namespace);
     Ingress getIngressById(String ingressId);
 }

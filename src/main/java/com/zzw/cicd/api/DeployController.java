@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties.Value;
 import com.zzw.cicd.model.Deploy;
 import com.zzw.cicd.model.Entity;
 import com.zzw.cicd.model.Vo.DeployVo;
@@ -31,10 +32,13 @@ import com.zzw.cicd.util.DockerRegistryUtil;
 
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.HostPathVolumeSource;
+import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.Volume;
 import io.fabric8.kubernetes.api.model.VolumeMount;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
+import io.fabric8.kubernetes.api.model.extensions.Ingress;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Api(value = "部署控制器", tags = { "部署控制器" })
 @RestController
@@ -54,6 +58,7 @@ public class DeployController {
 	 * @param deploy
 	 * @return
 	 */
+	@ApiOperation(value = "创建修改部署", notes = "创建修改部署")
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<Entity<Boolean>> createDeployment(@RequestBody DeployVo deployVo) {
 		// 创建部署，服务，代理
@@ -152,6 +157,7 @@ public class DeployController {
 		return Entity.success(true);
 	}
 
+	@ApiOperation(value = "根据名字查询部署", notes = "根据名字查询部署")
 	@RequestMapping(value = "/name/{name}/deploy", method = RequestMethod.GET)
 	public ResponseEntity<Entity<DeployVo>> getDeployByName(@PathVariable String name,
 			@RequestParam(required = false) String namespace) {
@@ -164,8 +170,9 @@ public class DeployController {
 		return Entity.success(deployVo);
 	}
 
+	@ApiOperation(value = "根据命名空间获得部署", notes = "根据命名空间获得部署")
 	@RequestMapping(value = "/namespace/{namespace}/deploy", method = RequestMethod.GET)
-	public ResponseEntity<Entity<List>> getDeployListByName(@PathVariable String namespace) {
+	public ResponseEntity<Entity<List>> getDeployListByNamespace(@PathVariable String namespace) {
 		// 创建部署，服务，代理
 		if ("".equals(namespace) || null == namespace) {
 			namespace = "default";
@@ -174,6 +181,7 @@ public class DeployController {
 		return Entity.success(deployVos);
 	}
 
+	@ApiOperation(value = "获得部署详情", notes = "获得部署详情")
 	@RequestMapping(value = "/name/{name}/deployment", method = RequestMethod.GET)
 	public ResponseEntity<Entity<Deployment>> getDeploymentByName(@PathVariable String name,
 			@RequestParam(required = false) String namespace) {
@@ -186,16 +194,43 @@ public class DeployController {
 		return Entity.success(deployment);
 	}
 	
+	
+	@ApiOperation(value = "获得服务详情", notes = "获得服务详情")
+	@RequestMapping(value = "/name/{name}/service", method = RequestMethod.GET)
+	public ResponseEntity<Entity<Service>> getServiceByName(@PathVariable String name,
+			@RequestParam(required = false) String namespace) {
+		if ("".equals(namespace) || null == namespace) {
+			namespace = "default";
+		}
+		Service service = serviceService.getServiceByNameAndNamespace(name, namespace);
+
+		return Entity.success(service);
+	}
+	
+	@ApiOperation(value = "获得Ingress详情", notes = "获得Ingress详情")
+	@RequestMapping(value = "/name/{name}/ingress", method = RequestMethod.GET)
+	public ResponseEntity<Entity<Ingress>> getIngressByName(@PathVariable String name,
+			@RequestParam(required = false) String namespace) {
+		if ("".equals(namespace) || null == namespace) {
+			namespace = "default";
+		}
+		Ingress ingress = ingressService.getIngressByNameAndNamespace(name, namespace);
+
+		return Entity.success(ingress);
+	}
+	
+	@ApiOperation(value = "获得镜像列表", notes = "获得镜像列表")
 	@RequestMapping(value = "/name/{name}/ImagesTarget", method = RequestMethod.GET)
 	public ResponseEntity<Entity<List<String>>> getImagesTarget(@PathVariable String name) {
 		List<String> list = DockerRegistryUtil.getImagesTarget(name);
-		if(list == null) {
+		if(list == null || list.size() <= 0) {
 			Entity.failure(404, "没有该镜像");
 		}
 		Collections.sort(list);
 		return Entity.success(list);
 	}
 
+	@ApiOperation(value = "删除部署", notes = "删除部署")
 	@RequestMapping(value = "/name/{name}", method = RequestMethod.DELETE)
 	public ResponseEntity<Entity<Boolean>> deleteDeploymentByName(@PathVariable String name,
 			@RequestParam(required = false) String namespace) {

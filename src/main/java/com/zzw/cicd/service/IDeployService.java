@@ -5,6 +5,7 @@ import java.util.List;
 import com.zzw.cicd.model.Deploy;
 import com.zzw.cicd.model.Vo.DeployVo;
 
+import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 
 public interface IDeployService {

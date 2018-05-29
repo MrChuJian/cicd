@@ -76,7 +76,7 @@ public class PipelineServiceImpl implements PipelineService {
 		// 3.全局变量
 		// 4.局部变量
 		// 5.整体拼凑
-		
+
 		StringBuffer script = new StringBuffer();
 		script.append("\n");
 		script.append("node('" + node + "'){");
@@ -213,27 +213,27 @@ public class PipelineServiceImpl implements PipelineService {
 		PPL ppl = pplMapper.getById(id);
 		String name = ppl.getName();
 		String token = ppl.getAuthToken();
-		if(name != null && !name.equals("") && token != null && !token.equals("")) {
+		if (name != null && !name.equals("") && token != null && !token.equals("")) {
 			return start(name, token);
 		}
 		return false;
 	}
-	
+
 	public boolean start(String name, String token) {
-		HttpClient client = new HttpClient();  
-		
-        client.getParams().setAuthenticationPreemptive(true);  
-        Credentials defaultcreds = new UsernamePasswordCredentials("admin", "admin");  
-        client.getState().setCredentials(AuthScope.ANY, defaultcreds); 
-        
-        StringBuffer url = new StringBuffer(CacheUtil.getJenkinsUrl());
+		HttpClient client = new HttpClient();
+
+		client.getParams().setAuthenticationPreemptive(true);
+		Credentials defaultcreds = new UsernamePasswordCredentials("admin", "admin");
+		client.getState().setCredentials(AuthScope.ANY, defaultcreds);
+
+		StringBuffer url = new StringBuffer(CacheUtil.getJenkinsUrl());
 		url.append("/job/" + name + "/build?token=" + token);
 		System.out.println(url.toString());
 		HttpMethod method = new PostMethod(url.toString());
-		
+
 		try {
 			int code = client.executeMethod(method);
-			if(code >= 200 && code <400) {
+			if (code >= 200 && code < 400) {
 				String body = method.getResponseBodyAsString();
 			} else {
 				System.out.println(code);
@@ -247,7 +247,7 @@ public class PipelineServiceImpl implements PipelineService {
 			return false;
 		}
 		return true;
-		
+
 	}
 
 	@Override
@@ -255,6 +255,5 @@ public class PipelineServiceImpl implements PipelineService {
 		PPL ppl = pplMapper.getByName(name);
 		return ppl;
 	}
-
 
 }

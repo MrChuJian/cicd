@@ -135,6 +135,12 @@ public class KubernetesUtil {
          return withName.get();
   	}
   	
+  	public static Deployment getService(Deployment deployment) {
+		ScalableResource<Deployment, DoneableDeployment> withName = getClient().extensions().deployments().inNamespace(deployment.getMetadata().getNamespace()).withName(deployment.getMetadata().getName());
+		
+        return withName.get();
+  	}
+  	
 	public static void deleteDeployment(Deployment deployment ) throws Exception {
 		ScalableResource<Deployment, DoneableDeployment> withName = getClient().extensions().deployments().inNamespace(deployment.getMetadata().getNamespace()).withName(deployment.getMetadata().getName());
          Deployment oldDeployment = withName.get();
@@ -154,7 +160,8 @@ public class KubernetesUtil {
 	
 	public static Ingress getIngress(Ingress ingress){
 		Resource<Ingress, DoneableIngress> withName = getClient().extensions().ingresses().inNamespace(ingress.getMetadata().getNamespace()).withName(ingress.getMetadata().getName());
-	    return withName.get();
+		Ingress ingress2 = withName.get();
+	    return ingress2;
 	}
 	
 	public static void deleteIngress(Ingress ingress){
