@@ -33,7 +33,6 @@ public class TestController {
 
 	@GetMapping(value = "/greeting")
 	public ResponseEntity<Entity<String>> greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name) {
-		
 		return Entity.success("greeting");
 	}
 	
