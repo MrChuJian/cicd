@@ -14,12 +14,12 @@ import com.zzw.cicd.model.Vo.DeployVo;
 @Repository
 public interface DeployMapper extends BaseMapper{
    
-	 @Insert("INSERT INTO deploy (id, NAME, LANGUAGE, namespace, image_url , memory, cpu, replicas, container_port, protocol , ingress_domain, ingress_ip, metadata) "
-	 		+ "VALUES (#{id},#{name}, #{language}, #{namespace}, #{container.imageUrl} ,#{memory},#{cpu},#{replicas},#{container.containerPort},#{container.protocol} , #{ingressDomain}, #{ingressIp}, #{metadata})")
+	 @Insert("INSERT INTO deploy (id, NAME, LANGUAGE, namespace, image_url , memory, cpu, replicas, ingress_domain, ingress_ip, metadata) "
+	 		+ "VALUES (#{id},#{name}, #{language}, #{namespace}, #{container.imageUrl} ,#{memory},#{cpu},#{replicas}, #{ingressDomain}, #{ingressIp}, #{metadata})")
 	 int insert(DeployVo deploy);
 	 
 	 @Update("UPDATE deploy SET NAME = #{name}, LANGUAGE = #{language}, namespace = #{namespace}, image_url = #{container.imageUrl}, memory = #{memory}, cpu = #{cpu},"
-	 		+ " replicas = #{replicas}, container_port = #{container.containerPort}, protocol = #{container.protocol}, ingress_domain = #{ingressDomain}, ingress_ip = #{ingressIp}, metadata = #{metadata} where id=#{id}")
+	 		+ " replicas = #{replicas}, ingress_domain = #{ingressDomain}, ingress_ip = #{ingressIp}, metadata = #{metadata} where id=#{id}")
 	 int update(DeployVo deployVo);
 	 
 	 @Select("SELECT "

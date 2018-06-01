@@ -22,7 +22,6 @@ public class PropertyUtil extends PropertiesLoaderSupport{
 				resources.addAll(Arrays.asList(ResourceUtil.getResources(cls[i])));
 			}
 			this.setLocations(resources.toArray(new Resource[0]));
-			this.setLocations(resources.toArray(new Resource[0]));
 			this.config = this.mergeProperties();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -21,6 +21,7 @@ import com.zzw.cicd.model.Vo.PplTemplate;
 import com.zzw.cicd.service.PipelineService;
 import com.zzw.cicd.service.TemplateService;
 import com.zzw.cicd.util.KubernetesUtil;
+import com.zzw.cicd.util.PropertyUtil;
 
 @Controller
 public class TestController {
@@ -38,7 +39,8 @@ public class TestController {
 	
 	@RequestMapping(value = "/shabi", method = RequestMethod.GET)
 	public String hello(Model model) {
-		io.fabric8.kubernetes.api.Controller controller =  KubernetesUtil.getController("kube-system");
+		PropertyUtil propertyUtil = new PropertyUtil();
+		propertyUtil.init();
 		return "greeting";
 	}
 	
